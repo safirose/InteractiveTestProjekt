@@ -13,6 +13,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 //Klasse til at tilføje markører til kortet
 import org.osmdroid.views.overlay.Marker;
+import android.content.Intent;
 
 //Definerer vores hoved aktivitet
 public class MainActivity extends AppCompatActivity {
@@ -57,8 +58,31 @@ public class MainActivity extends AppCompatActivity {
         marker2.setTitle("Aarhus");
         marker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         map.getOverlays().add(marker2);
-    }
+
+
+        // Gør København-markøren interaktiv
+        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView) {
+                Intent intent = new Intent(MainActivity.this, MarkerDetailActivity.class);
+                intent.putExtra("location_name", "København");
+                startActivity(intent);
+                return true; // Returnerer true for at indikere, at vi håndterer klik-handlingen
+            }
+        });
+
+        marker2.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView) {
+                Intent intent = new Intent(MainActivity.this, MarkerDetailActivity.class);
+                intent.putExtra("location_name", "Aarhus");
+                startActivity(intent);
+                return true;
+            }
+        });
 
 
     }
+
+}
 

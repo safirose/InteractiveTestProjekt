@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import org.beginningandroid.interactivetest.R
 import java.io.DataInput
 import kotlin.math.log
 
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.login_activity_main)
         brugernavnInput = findViewById(R.id.brugernavn_input)
         passwordInput = findViewById(R.id.kode_input)
         loginBtn = findViewById(R.id.login_btn)

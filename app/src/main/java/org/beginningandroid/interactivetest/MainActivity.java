@@ -1,5 +1,7 @@
 package org.beginningandroid.interactivetest;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.os.Bundle;
 //Bruges til at lave en Android Activity
 import androidx.appcompat.app.AppCompatActivity;

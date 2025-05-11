@@ -1,0 +1,53 @@
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\n    alias(libs.plugins.android.application)\n    alias(libs.plugins.kotlin.android)\n}\n\nandroid {\n    namespace = \"org.beginningandroid.interactivetest\"\n    compileSdk = 35\n\n    defaultConfig {\n        applicationId = \"org.beginningandroid.interactivetest\"\n        minSdk = 24\n        targetSdk = 35\n        versionCode = 1\n        versionName = \"1.0\"\n\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\n    }\n\n    buildTypes {\n        release {\n            isMinifyEnabled = false\n            proguardFiles(\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\n                \"proguard-rules.pro\"\n            )\n        }\n    }\n    compileOptions {\n        sourceCompatibility = JavaVersion.VERSION_11\n        targetCompatibility = JavaVersion.VERSION_11\n    }\n    kotlinOptions {\n        jvmTarget = \"11\"\n    }\n}\n\ndependencies {\n\n    implementation(libs.appcompat)\n    implementation(libs.material)\n    implementation(libs.activity)\n    implementation(libs.constraintlayout)\n    implementation(libs.core.ktx)\n    implementation(libs.monitor)\n    implementation(libs.junit.ktx)\n    testImplementation(libs.junit)\n    androidTestImplementation(libs.ext.junit)\n    androidTestImplementation(libs.espresso.core)\n    implementation(libs.osmdroid)\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	(revision b0bd002bbaa4cc1260f079928f0523e82e76d5d1)
++++ b/app/build.gradle.kts	(date 1746958179596)
+@@ -36,7 +36,7 @@
+ }
+ 
+ dependencies {
+-
++    implementation ("androidx.lifecycle:lifecycle-runtime:2.6.2")
+     implementation(libs.appcompat)
+     implementation(libs.material)
+     implementation(libs.activity)
+@@ -44,6 +44,7 @@
+     implementation(libs.core.ktx)
+     implementation(libs.monitor)
+     implementation(libs.junit.ktx)
++    implementation(libs.androidx.core.ktx)
+     testImplementation(libs.junit)
+     androidTestImplementation(libs.ext.junit)
+     androidTestImplementation(libs.espresso.core)
+Index: gradle/libs.versions.toml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>[versions]\nagp = \"8.9.1\"\njunit = \"4.13.2\"\njunitVersion = \"1.2.1\"\nespressoCore = \"3.6.1\"\nappcompat = \"1.7.0\"\nmaterial = \"1.12.0\"\nactivity = \"1.10.1\"\nconstraintlayout = \"2.2.1\"\nkotlin = \"2.1.20\"\ncoreKtx = \"1.15.0\"\nmonitor = \"1.7.2\"\njunitKtx = \"1.2.1\"\n\n[libraries]\njunit = { group = \"junit\", name = \"junit\", version.ref = \"junit\" }\next-junit = { group = \"androidx.test.ext\", name = \"junit\", version.ref = \"junitVersion\" }\nespresso-core = { group = \"androidx.test.espresso\", name = \"espresso-core\", version.ref = \"espressoCore\" }\nappcompat = { group = \"androidx.appcompat\", name = \"appcompat\", version.ref = \"appcompat\" }\nmaterial = { group = \"com.google.android.material\", name = \"material\", version.ref = \"material\" }\nactivity = { group = \"androidx.activity\", name = \"activity\", version.ref = \"activity\" }\nconstraintlayout = { group = \"androidx.constraintlayout\", name = \"constraintlayout\", version.ref = \"constraintlayout\" }\n\nosmdroid = { module = \"org.osmdroid:osmdroid-android\", version = \"6.1.16\" }\ncore-ktx = { group = \"androidx.core\", name = \"core-ktx\", version.ref = \"coreKtx\" }\nmonitor = { group = \"androidx.test\", name = \"monitor\", version.ref = \"monitor\" }\njunit-ktx = { group = \"androidx.test.ext\", name = \"junit-ktx\", version.ref = \"junitKtx\" }\n[plugins]\nandroid-application = { id = \"com.android.application\", version.ref = \"agp\" }\nkotlin-android = { id = \"org.jetbrains.kotlin.android\", version.ref = \"kotlin\" }\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
+--- a/gradle/libs.versions.toml	(revision b0bd002bbaa4cc1260f079928f0523e82e76d5d1)
++++ b/gradle/libs.versions.toml	(date 1746958016853)
+@@ -11,6 +11,7 @@
+ coreKtx = "1.15.0"
+ monitor = "1.7.2"
+ junitKtx = "1.2.1"
++coreKtxVersion = "1.16.0"
+ 
+ [libraries]
+ junit = { group = "junit", name = "junit", version.ref = "junit" }
+@@ -25,6 +26,7 @@
+ core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+ monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
+ junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
++androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtxVersion" }
+ [plugins]
+ android-application = { id = "com.android.application", version.ref = "agp" }
+ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

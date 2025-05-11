@@ -1,3 +1,4 @@
+//HEJ
 package org.beginningandroid.interactivetest;
 
 import android.os.Bundle;

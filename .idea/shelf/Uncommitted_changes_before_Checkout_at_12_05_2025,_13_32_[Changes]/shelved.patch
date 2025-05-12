@@ -1,0 +1,185 @@
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\n    alias(libs.plugins.android.application)\n}\n\nandroid {\n    namespace = \"org.beginningandroid.interactivetest\"\n    compileSdk = 35\n\n    defaultConfig {\n        applicationId = \"org.beginningandroid.interactivetest\"\n        minSdk = 24\n        targetSdk = 35\n        versionCode = 1\n        versionName = \"1.0\"\n\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\n    }\n\n    buildTypes {\n        release {\n            isMinifyEnabled = false\n            proguardFiles(\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\n                \"proguard-rules.pro\"\n            )\n        }\n    }\n    compileOptions {\n        sourceCompatibility = JavaVersion.VERSION_11\n        targetCompatibility = JavaVersion.VERSION_11\n    }\n}\n\ndependencies {\n\n    implementation(libs.appcompat)\n    implementation(libs.material)\n    implementation(libs.activity)\n    implementation(libs.constraintlayout)\n    testImplementation(libs.junit)\n    androidTestImplementation(libs.ext.junit)\n    androidTestImplementation(libs.espresso.core)\n    implementation(libs.osmdroid)\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	(revision 641dcd29574d28f5d81b5e405f8b8bafc2135cb7)
++++ b/app/build.gradle.kts	(date 1747049489339)
+@@ -32,7 +32,7 @@
+ }
+ 
+ dependencies {
+-
++    implementation("com.google.mlkit:text-recognition:16.0.1")
+     implementation(libs.appcompat)
+     implementation(libs.material)
+     implementation(libs.activity)
+Index: app/src/main/java/org/beginningandroid/interactivetest/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.beginningandroid.interactivetest;\n//Bruges til at skifte mellem vores aktiviteter\nimport android.content.Intent;\n//Gemmer midlertidige data ved rotation mellem skærmene\nimport android.os.Bundle;\n//Importere grundklasse for vores app\nimport androidx.appcompat.app.AppCompatActivity;\n\n//Definerer vores MainActivity, der arver fra AppCompatActivity\npublic class MainActivity extends AppCompatActivity {\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n\n        // Start LoginActivity i stedet for MapActivity, nu hvor login er implementeret\n        Intent intent = new Intent(MainActivity.this, LoginActivity.class);\n        startActivity(intent);\n\n        finish(); // Luk MainActivity så den ikke ligger i baggrunden\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/org/beginningandroid/interactivetest/MainActivity.java b/app/src/main/java/org/beginningandroid/interactivetest/MainActivity.java
+--- a/app/src/main/java/org/beginningandroid/interactivetest/MainActivity.java	(revision 641dcd29574d28f5d81b5e405f8b8bafc2135cb7)
++++ b/app/src/main/java/org/beginningandroid/interactivetest/MainActivity.java	(date 1747049493491)
+@@ -1,21 +1,88 @@
+ package org.beginningandroid.interactivetest;
+-//Bruges til at skifte mellem vores aktiviteter
+-import android.content.Intent;
+-//Gemmer midlertidige data ved rotation mellem skærmene
++
+ import android.os.Bundle;
+-//Importere grundklasse for vores app
++//Bruges til at lave en Android Activity
+ import androidx.appcompat.app.AppCompatActivity;
++//Bruges til at danne vores OSM kort bibliotek
++import org.osmdroid.config.Configuration;
++//Indholder forskellige kort layouts
++import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
++//Klasse til at håndtere geopoint (tilføje punkter til kortet)
++import org.osmdroid.util.GeoPoint;
++//Klasse til at fremvise kortet i appen
++import org.osmdroid.views.MapView;
++//Klasse til at tilføje markører til kortet
++import org.osmdroid.views.overlay.Marker;
++import android.content.Intent;
+ 
+-//Definerer vores MainActivity, der arver fra AppCompatActivity
++//Definerer vores hoved aktivitet
+ public class MainActivity extends AppCompatActivity {
++
++//deklarer et kort objekt
++    private MapView map;
+     @Override
++    //onCreate se lifecycle for app activities!
+     protected void onCreate(Bundle savedInstanceState) {
++        //Kalder vores superklasse
+         super.onCreate(savedInstanceState);
++        //Indlæser layout filen fra res/layout/activity_main.xml
++        setContentView(R.layout.activity_main);
++
++        // Konfigurer osmdroid (OpenStreetMap biblioteket)
++        Configuration.getInstance().setUserAgentValue(NOTIFICATION_SERVICE);
++
++        // Initialiser kortet
++        map = findViewById(R.id.map); //Finder kortet i layout filen (fra activity_main.xml), gennem ID
++        map.setTileSource(TileSourceFactory.MAPNIK); // Sætter layout til Standard OpenStreetMap layout
++        map.setMultiTouchControls(true); // Aktiver zoom og panorering, gennem multitouch
++
++        //  Sæt kortets startposition til København
++        GeoPoint startPoint = new GeoPoint(55.6761, 12.5683);
++        //Kan ændre zoom i starten
++        map.getController().setZoom(15.0);
++        //Sætter centrum på startpunktet
++        map.getController().setCenter(startPoint);
+ 
+-        // Start LoginActivity i stedet for MapActivity, nu hvor login er implementeret
+-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+-        startActivity(intent);
++        //Test, prøver at tilføje flere markører/punkter til kortet
++        GeoPoint supermarket1 = new GeoPoint(55.6760, 12.5680);
++
++        // Tilføj et markør til kortet
++        Marker marker = new Marker(map);
++        marker.setPosition(startPoint);
++        marker.setTitle("København");
++        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
++        map.getOverlays().add(marker);
++
++        Marker marker2 = new Marker(map);
++        marker2.setPosition(supermarket1);
++        marker2.setTitle("Aarhus");
++        marker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
++        map.getOverlays().add(marker2);
++
++
++        // Gør København-markøren interaktiv
++        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
++            @Override
++            public boolean onMarkerClick(Marker marker, MapView mapView) {
++                Intent intent = new Intent(MainActivity.this, MarkerDetailActivity.class);
++                intent.putExtra("location_name", "København");
++                startActivity(intent);
++                return true; // Returnerer true for at indikere, at vi håndterer klik-handlingen
++            }
++        });
++
++        marker2.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
++            @Override
++            public boolean onMarkerClick(Marker marker, MapView mapView) {
++                Intent intent = new Intent(MainActivity.this, MarkerDetailActivity.class);
++                intent.putExtra("location_name", "Aarhus");
++                startActivity(intent);
++                return true;
++            }
++        });
++
+ 
+-        finish(); // Luk MainActivity så den ikke ligger i baggrunden
+     }
++
+ }
++
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<org.osmdroid.views.MapView xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    android:id=\"@+id/map\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\" />
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_main.xml b/app/src/main/res/layout/activity_main.xml
+--- a/app/src/main/res/layout/activity_main.xml	(revision 641dcd29574d28f5d81b5e405f8b8bafc2135cb7)
++++ b/app/src/main/res/layout/activity_main.xml	(date 1747049496504)
+@@ -1,5 +1,12 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<org.osmdroid.views.MapView xmlns:android="http://schemas.android.com/apk/res/android"
+-    android:id="@+id/map"
+-    android:layout_width="match_parent"
+-    android:layout_height="match_parent" />
+\ No newline at end of file
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++    <!-- 🗺️ OSM Kort -->
++    <org.osmdroid.views.MapView
++        android:id="@+id/map"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"/>
++
++</RelativeLayout>
+Index: app/src/main/java/org/beginningandroid/interactivetest/ReceiptDatabaseHelper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/org/beginningandroid/interactivetest/ReceiptDatabaseHelper.java b/app/src/main/java/org/beginningandroid/interactivetest/ReceiptDatabaseHelper.java
+new file mode 100644
+--- /dev/null	(date 1747049496522)
++++ b/app/src/main/java/org/beginningandroid/interactivetest/ReceiptDatabaseHelper.java	(date 1747049496522)
+@@ -0,0 +1,20 @@
++package org.beginningandroid.interactivetest;
++
++import android.content.Context;
++import android.database.sqlite.SQLiteDatabase;
++import android.database.sqlite.SQLiteOpenHelper;
++import android.content.ContentValues;
++import android.database.Cursor;
++public class ReceiptDatabaseHelper extends SQLiteOpenHelper{
++    private static final String DATABASE_NAME = "recepits.db";
++    private static final int DATABASE_VERSION = 1;
++
++    public static final String TABLE_NAME = "pantbon";
++    public static final String COLUMN_ID = "_id";
++    public static final String COLUMN_TOTAL = "total";
++    public static final String COLUMN_DATE = "date";
++    public static final String COLUMN_TIME = "time";
++    public static final String COLUMN_BOTTLES = "bottles";
++
++    private static final String TABLE_CREATE = "CREATE TABLE"+TABLE_NAME+"("+COLUMN_ID+"INTEGER PRIMARY KEY AUTOINCREMENT,"+ COLUMN_TOTAL+"TEXT,"+COLUMN_DATE+"TEXT,"+COLUMN_TIME
++}

@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/hjem_ikon"
+        android:title="HJEM" />
+    <item
+        android:id="@+id/nav_scan"
+        android:icon="@drawable/kamera_ikon"
+        android:title="SCAN PANT" />
+    <item
+        android:id="@+id/nav_saldo"
+        android:icon="@drawable/konto_ikon"
+        android:title="MIN KONTO" />
+</menu>

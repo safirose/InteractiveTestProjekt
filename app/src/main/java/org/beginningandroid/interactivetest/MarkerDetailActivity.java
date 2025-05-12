@@ -15,6 +15,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         // Find TextView og opdater teksten med markørens navn
         TextView textView = findViewById(R.id.textView);
-        textView.setText("Du klikkede på: " + locationName);
+        textView.setText("Du klikkede på: " + locationName + "\n Åbningstiderne er: 7:00-22");
+
     }
 }

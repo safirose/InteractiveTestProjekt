@@ -2,8 +2,14 @@ package org.beginningandroid.interactivetest;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
+
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.Button;
 //Bruges til at lave en Android Activity
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 //Bruges til at danne vores OSM kort bibliotek
 import org.osmdroid.config.Configuration;
@@ -16,12 +22,47 @@ import org.osmdroid.views.MapView;
 //Klasse til at tilføje markører til kortet
 import org.osmdroid.views.overlay.Marker;
 import android.content.Intent;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 //Definerer vores hoved aktivitet
 public class MainActivity extends AppCompatActivity {
+ private static final int REQUEST_CODE = 22;
+    Button bntpicture;
+    ImageView imageView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        bntpicture = findViewById(R.id.btnkamera_id);
+        imageView = findViewById(R.id.imageview1);
+
+        bntpicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent,REQUEST_CODE);
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode==REQUEST_CODE && resultCode == RESULT_OK)
+        {
+            Bitmap photo  = (Bitmap) data.getExtras().get("data");
+            imageView.setImageBitmap(photo);
+        }
+        else {
+            Toast.makeText(this,"Cancelled",Toast.LENGTH_SHORT).show();
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+}
 
 //deklarer et kort objekt
-    private MapView map;
+ /*   private MapView map;
     @Override
     //onCreate se lifecycle for app activities!
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,5 +127,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-}
+}*/
 

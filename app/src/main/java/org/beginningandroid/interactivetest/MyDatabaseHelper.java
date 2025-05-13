@@ -1,32 +1,32 @@
 package org.beginningandroid.interactivetest;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+//vores DB-helper nedarver fra super klassene SQLiteOpenHelper
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     // Database-navn og version
     private static final String DATABASE_NAME = "MinPantAppDatabase.db";
     private static final int DATABASE_VERSION = 1;
 
-    // Tabel- og kolonnenavne
+    // Tabel- og kolonnenavne: Tabellen "Bruger" indholder brugernavn og unikt bruger_id.
     public static final String TABLE_BRUGER = "Bruger";
-    public static final String COLUMN_ID = "bruger_id";        // Primærnøgle
-    public static final String COLUMN_NAME = "brugernavn";     // Brugernavn
+    public static final String COLUMN_ID = "bruger_id";
+    public static final String COLUMN_NAME = "brugernavn";
 
+    //Constructor som kaldes ved oprettelse af databasen
     public MyDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
-    // Kaldes når databasen oprettes første gang
+    // Kaldes når databasen oprettes første gang, vi onCreate
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE " + TABLE_BRUGER + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_NAME + " TEXT UNIQUE)";
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + //PK og Autoincrement
+                COLUMN_NAME + " TEXT UNIQUE)"; //Sørger for unikt brugernavn
         db.execSQL(CREATE_TABLE);
     }
 

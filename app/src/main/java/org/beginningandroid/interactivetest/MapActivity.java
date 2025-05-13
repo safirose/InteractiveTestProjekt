@@ -17,7 +17,7 @@ import org.osmdroid.views.MapView;
 // Klasse til at tilføje markører til kortet
 import org.osmdroid.views.overlay.Marker;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends BaseActivity {
 
     // Deklarerer et kort objekt
     private MapView map;
@@ -30,31 +30,8 @@ public class MapActivity extends AppCompatActivity {
         // Indlæser layout filen fra res/layout/activity_map.xml
         setContentView(R.layout.activity_map);
 
-        // Initialiser og håndter bundmenu
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setSelectedItemId(R.id.nav_home); // Marker 'HJEM' som aktiv
-
-        // Håndter klik på menu-punkter
-        bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.nav_home) {
-                return true; // Allerede på kortet
-            }
-
-            // Hvis du senere opretter ScanActivity eller SaldoActivity,
-            // kan du fjerne kommentarerne nedenfor:
-            /*
-            else if (id == R.id.nav_scan) {
-                startActivity(new Intent(MapActivity.this, ScanActivity.class));
-                return true;
-            } else if (id == R.id.nav_saldo) {
-                startActivity(new Intent(MapActivity.this, SaldoActivity.class));
-                return true;
-            }
-            */
-            return false;
-        });
+        // Kalder den fælles metode fra BaseActivity for at aktivere bundmenu
+        setupBottomNavigation(R.id.nav_home);
 
         // Konfigurer osmdroid (OpenStreetMap biblioteket)
         Configuration.getInstance().setUserAgentValue(getPackageName());
@@ -66,15 +43,13 @@ public class MapActivity extends AppCompatActivity {
 
         // Sæt kortets startposition til København
         GeoPoint startPoint = new GeoPoint(55.6761, 12.5683);
-        // Kan ændre zoom i starten
         map.getController().setZoom(15.0);
-        // Sætter centrum på startpunktet
         map.getController().setCenter(startPoint);
 
         // Test, prøver at tilføje flere markører/punkter til kortet
         GeoPoint supermarket1 = new GeoPoint(55.6760, 12.5680);
 
-        // Tilføj en markør til kortet
+        // Tilføj markører
         Marker marker = new Marker(map);
         marker.setPosition(startPoint);
         marker.setTitle("København");
@@ -87,12 +62,12 @@ public class MapActivity extends AppCompatActivity {
         marker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         map.getOverlays().add(marker2);
 
-        // Gør København-markøren interaktiv
+        // Gør markører interaktive
         marker.setOnMarkerClickListener((clickedMarker, mapView) -> {
             Intent intent = new Intent(MapActivity.this, MarkerDetailActivity.class);
             intent.putExtra("location_name", "København");
             startActivity(intent);
-            return true; // Returnerer true for at indikere, at vi håndterer klik-handlingen
+            return true;
         });
 
         marker2.setOnMarkerClickListener((clickedMarker, mapView) -> {

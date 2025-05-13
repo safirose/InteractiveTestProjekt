@@ -12,10 +12,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Start LoginActivity i stedet for MapActivity, nu hvor login er implementeret
+        // Starter LoginActivity som MainActivity, da dette er vores første aktivitet
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
 
-        finish(); // Luk MainActivity så den ikke ligger i baggrunden
+        finish(); // Luk MainActivity så den ikke ligger i baggrunden,
+        // vi skal nemlig heller ikke gå tilbage
     }
 }

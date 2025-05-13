@@ -2,7 +2,10 @@ package org.beginningandroid.interactivetest;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
-
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -11,6 +14,8 @@ import android.widget.Button;
 //Bruges til at lave en Android Activity
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 //Bruges til at danne vores OSM kort bibliotek
 import org.osmdroid.config.Configuration;
 //Indholder forskellige kort layouts
@@ -47,9 +52,13 @@ public class MainActivity extends AppCompatActivity {
     ReceiptDatabaseHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA)
+        != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},100);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bntScan = findViewById(R.id.btnscanner_id);
+        bntScan = findViewById(R.id.btnkamera_id);
         btnHistory = findViewById(R.id.btn_history);
         imageView = findViewById(R.id.imageview1);
         resultText = findViewById(R.id.result_text);

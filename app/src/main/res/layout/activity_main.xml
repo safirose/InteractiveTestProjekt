@@ -14,7 +14,7 @@
         />
 
     <Button
-        android:id="@+id/btnscanner_id"
+        android:id="@+id/btnkamera_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text"
@@ -26,7 +26,7 @@
         android:id="@+id/imageview1"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_below="@+id/btnscanner_id"
+        android:layout_below="@+id/btnkamera_id"
         android:scaleType="fitCenter"
         />
     <TextView

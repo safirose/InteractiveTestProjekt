@@ -17,12 +17,12 @@ public class ReceiptDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BOTTLES = "bottles";
 
     private static final String TABLE_CREATE =
-            "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" +
-                    COLUMN_ID + "INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    COLUMN_TOTAL + "TEXT," +
-                    COLUMN_DATE + "TEXT," +
-                    COLUMN_TIME + "TEXT," +
-                    COLUMN_BOTTLES + "TEXT);";
+            "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    COLUMN_TOTAL + " TEXT," +
+                    COLUMN_DATE + " TEXT," +
+                    COLUMN_TIME + " TEXT," +
+                    COLUMN_BOTTLES + " TEXT);";
 
     public ReceiptDatabaseHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);

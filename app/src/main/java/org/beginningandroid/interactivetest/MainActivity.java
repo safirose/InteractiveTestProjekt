@@ -23,42 +23,102 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import android.content.Intent;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
+import com.google.mlkit.vision.text.Text;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //Definerer vores hoved aktivitet
 public class MainActivity extends AppCompatActivity {
  private static final int REQUEST_CODE = 22;
-    Button bntpicture;
+    Button bntScan, btnHistory;
     ImageView imageView;
+    TextView resultText;
+    ReceiptDatabaseHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bntpicture = findViewById(R.id.btnkamera_id);
+        bntScan = findViewById(R.id.btnscanner_id);
+        btnHistory = findViewById(R.id.btn_history);
         imageView = findViewById(R.id.imageview1);
+        resultText = findViewById(R.id.result_text);
+        dbHelper = new ReceiptDatabaseHelper(this);
 
-        bntpicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent,REQUEST_CODE);
 
-            }
+        bntScan.setOnClickListener(v ->  {
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent,REQUEST_CODE);
+
         });
+        btnHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this,HistoryActivity.class);
+        startActivity(intent);
+    });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode==REQUEST_CODE && resultCode == RESULT_OK)
-        {
+        if (requestCode==REQUEST_CODE && resultCode == RESULT_OK && data != null){
             Bitmap photo  = (Bitmap) data.getExtras().get("data");
             imageView.setImageBitmap(photo);
+            scanTextFromImage(photo);
+        }  else {
+            Toast.makeText(this,"Annuleret",Toast.LENGTH_SHORT).show();
         }
-        else {
-            Toast.makeText(this,"Cancelled",Toast.LENGTH_SHORT).show();
             super.onActivityResult(requestCode, resultCode, data);
-        }
     }
+    private void scanTextFromImage(Bitmap bitmap){
+        InputImage image  = InputImage.fromBitmap(bitmap,0);
+        TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+
+        recognizer.process(image).addOnSuccessListener(visionText->{
+            String rawText = visionText.getText();
+            parseAndSavePantbon (rawText);
+        }).addOnFailureListener(e->{
+            Toast.makeText(this,"Fejl i scanning",Toast.LENGTH_SHORT).show();
+        });
+
+    }
+    private void parseAndSavePantbon(String rawText){
+        Pattern totalPattern = Pattern.compile("\"(?m)^\\\\s*(\\\\d{1,4}[.,]\\\\d{2})\\\\s*$\"");
+        Matcher totalMatcher = totalPattern.matcher(rawText);
+
+        String total = "Ukendt";
+        while (totalMatcher.find()){
+            total = totalMatcher.group(1).replace(",",".");
+        }
+
+
+        Pattern bottlePattern  = Pattern.compile("(\\d+)\\s+Flasker?\\s+à\\s+(\\d+[.,]\\d{2})");
+        Matcher bottleMatcher = bottlePattern.matcher(rawText);
+        StringBuilder bottleSummary = new StringBuilder();
+        while (bottleMatcher.find()){
+            bottleSummary.append(bottleMatcher.group(1)).append("x").append(bottleMatcher.group(2).replace(",",".")).append("\n");
+        }
+        Pattern datePattern  = Pattern.compile("(\\d{2}:\\d{2})\\s+(\\d{2}-[A-Z]{3}-\\d{4})");
+        Matcher dateMatcher = datePattern.matcher(rawText);
+        String time = "Ukendt", date = "Ukendt";
+        if(dateMatcher.find()){
+            time = dateMatcher.group(1);
+            date = dateMatcher.group(2);
+        }
+        dbHelper.insertReceipt(total,date,time,bottleSummary.toString());
+
+        resultText.setText("Dato:"+date+"\nTid: " + time + "\nTotal: " + total + "\n\nFlasker:\n" + bottleSummary);
+
+    }
+
 }
 
 //deklarer et kort objekt

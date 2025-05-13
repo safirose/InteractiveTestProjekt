@@ -2,30 +2,48 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
+    android:layout_margin="5dp"
     >
 
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Klik på kamera"
+        android:textSize="25dp"
+        android:text="Klik på scanner"
         />
 
     <Button
-        android:id="@+id/btnkamera_id"
+        android:id="@+id/btnscanner_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text"
-        android:text="Kamera"
-        android:layout_centerHorizontal="true"
+        android:textSize="20dp"
+        android:text="Scan pantbon"
         />
 
     <ImageView
         android:id="@+id/imageview1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/btnkamera_id"
+        android:layout_height="200dp"
+        android:layout_below="@+id/btnscanner_id"
+        android:scaleType="fitCenter"
+        />
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageview1"
+        android:text="Resultat vises her"
+        android:padding="10dp"
         />
     
+    <Button
+        android:id="@+id/btn_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Se historik"
+        android:layout_below="@+id/result_text"
+        android:layout_marginTop="10dp"
+        />
 </RelativeLayout>

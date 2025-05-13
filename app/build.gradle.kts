@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-
+implementation ("com.google.mlkit:text-recognition:16.0.1")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

@@ -14,6 +14,6 @@ public class MarkerDetailActivity extends BaseActivity {
 
         // Find TextView og opdater teksten med markørens navn
         TextView textView = findViewById(R.id.textView);
-        textView.setText("Adresse " + locationName + "\nÅbningstiderne er: 7:00-22");
+        textView.setText("Adresse: " + locationName + "\nÅbningstiderne er: 7:00-22");
     }
 }

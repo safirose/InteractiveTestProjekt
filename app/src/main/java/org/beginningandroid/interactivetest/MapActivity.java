@@ -3,9 +3,15 @@ package org.beginningandroid.interactivetest;
 import android.content.Intent;
 // Biblotek til at implementere bottom navigation
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 // Bruges til at lave en Android Activity
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 // Bruges til at danne vores OSM kort bibliotek
 import org.osmdroid.config.Configuration;
 // Indholder forskellige kort layouts
@@ -49,39 +55,64 @@ public class MapActivity extends BaseActivity {
         map.setMultiTouchControls(true); // Aktiver zoom og panorering, gennem multitouch
 
         // Sæt kortets startposition til København
-        GeoPoint startPoint = new GeoPoint(55.6761, 12.5683);
+        GeoPoint startPoint = new GeoPoint(55.68617, 12.55077);
         map.getController().setZoom(15.0);
         map.getController().setCenter(startPoint);
 
         // Test, prøver at tilføje flere markører/punkter til kortet
-        GeoPoint supermarket1 = new GeoPoint(55.6760, 12.5680);
+        GeoPoint supermarket1 = new GeoPoint(55.68546, 12.55686);
 
         // Tilføj markører
         Marker marker = new Marker(map);
         marker.setPosition(startPoint);
-        marker.setTitle("København");
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setTitle("Netto, Blågårdsgade 26");
+        //marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setIcon(getResizedDrawable(R.drawable.netto_logo, 80, 80));
         map.getOverlays().add(marker);
 
         Marker marker2 = new Marker(map);
         marker2.setPosition(supermarket1);
-        marker2.setTitle("Aarhus");
-        marker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker2.setTitle("Netto, Rantzausgade 21");
+        //marker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker2.setIcon(getResizedDrawable(R.drawable.netto_logo, 80, 80));
         map.getOverlays().add(marker2);
 
         // Gør markører interaktive
         marker.setOnMarkerClickListener((clickedMarker, mapView) -> {
             Intent intent = new Intent(MapActivity.this, MarkerDetailActivity.class);
-            intent.putExtra("location_name", "København");
+            intent.putExtra("location_name", "Netto, Rantzausgade 21");
             startActivity(intent);
             return true;
         });
 
         marker2.setOnMarkerClickListener((clickedMarker, mapView) -> {
             Intent intent = new Intent(MapActivity.this, MarkerDetailActivity.class);
-            intent.putExtra("location_name", "Aarhus");
+            intent.putExtra("location_name", "Netto, Blågårdsgade 26");
             startActivity(intent);
             return true;
         });
     }
+    private Drawable getResizedDrawable(int drawableId, int width, int height) {
+        Drawable original = ContextCompat.getDrawable(this, drawableId);
+
+        if (original == null) return null;
+
+        Bitmap originalBitmap = Bitmap.createBitmap(
+                original.getIntrinsicWidth(),
+                original.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+
+        Canvas canvas = new Canvas(originalBitmap);
+        original.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        original.draw(canvas);
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, width, height, true);
+
+        return new BitmapDrawable(getResources(), scaledBitmap);
+    }
+
 }
+
+
+

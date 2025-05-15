@@ -1,5 +1,5 @@
 package org.beginningandroid.interactivetest;
-//Implementere android klasser + ML-kit klasser
+//Import af android klasser + ML-kit klasser
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,6 +19,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //Arver fra BaseActivity mht. bundmenu
 public class CameraActivity extends BaseActivity {
@@ -64,7 +66,7 @@ public class CameraActivity extends BaseActivity {
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-                // Analyse (stregkodelæsning)
+                // Billedeanalyse --> stregkodescanner
                 ImageAnalysis analysis = new ImageAnalysis.Builder().build();
                 analysis.setAnalyzer(getExecutor(), this::analyzeImage);
 
@@ -101,9 +103,21 @@ public class CameraActivity extends BaseActivity {
                         scanned = true;
 
                         runOnUiThread(() -> {
-                            Toast.makeText(this, "Scannet: " + raw, Toast.LENGTH_LONG).show();
-                            Log.d("SCANNING", "Indhold: " + raw);
+                            // 1. Parser stregkoden
+                            Kvittering kvit = parseKvitteringskode(raw);
+
+                            // 2. Gemmer i SQLite-databasen
+                            MyDatabaseHelper dbHelper = new MyDatabaseHelper(this);
+                            dbHelper.insertKvittering(kvit);
+
+                            // 3. Giver feedback til brugeren
+                            Toast.makeText(this,
+                                    "Kvittering gemt: " + kvit.getSamletBeloeb() + " kr",
+                                    Toast.LENGTH_LONG).show();
+
+                            Log.d("SCANNING", "Gemte kvittering:\n" + kvit.toDisplayString());
                         });
+                        // Her vil vi senere parse og gemme i database
                     }
                     imageProxy.close();
                 })
@@ -111,9 +125,67 @@ public class CameraActivity extends BaseActivity {
                     e.printStackTrace();
                     imageProxy.close();
                 });
+
     }
 
     private Executor getExecutor() {
         return ContextCompat.getMainExecutor(this);
+    }
+
+    // Parser stregkoden og returnerer en Kvittering
+    private Kvittering parseKvitteringskode(String kode) {
+        Kvittering k = new Kvittering();
+
+        // 1. Lokation ID (første tegn)
+        k.lokationId = Character.getNumericValue(kode.charAt(0));
+
+        // 2. Flaskekode (mellem index 1 og tidspunkt start)
+        Pattern flaskemønster = Pattern.compile("(\\d+[A-C])+");
+        Matcher matcher = flaskemønster.matcher(kode.substring(1));
+
+        int flaskeslut = -1;
+        if (matcher.find()) {
+            flaskeslut = matcher.end() + 1; // matcher arbejder på substring(1)
+            String flaskekode = kode.substring(1, flaskeslut);
+            k.antalTypeA = extractAntal(flaskekode, 'A');
+            k.antalTypeB = extractAntal(flaskekode, 'B');
+            k.antalTypeC = extractAntal(flaskekode, 'C');
+        }
+
+        // 3. Tidspunkt og dato fra substring(flaskeslut)
+        String tidOgDato = kode.substring(flaskeslut); // fx "09:40140425"
+
+        if (!tidOgDato.contains(":") || tidOgDato.length() < 9) {
+            k.tidspunkt = "ukendt";
+            k.dato = "ukendt";
+            return k;
+        }
+
+        String[] dele = tidOgDato.split(":");
+        if (dele.length != 2) {
+            k.tidspunkt = "ukendt";
+            k.dato = "ukendt";
+            return k;
+        }
+
+        String timer = dele[0];                // "09"
+        String minOgDato = dele[1];            // "40140425"
+
+        String minutter = minOgDato.substring(0, 2); // "40"
+        String dag = minOgDato.substring(2, 4);      // "14"
+        String måned = minOgDato.substring(4, 6);    // "04"
+        String år = "20" + minOgDato.substring(6, 8);// "2025"
+
+        k.tidspunkt = timer + ":" + minutter;
+        k.dato = år + "-" + måned + "-" + dag;
+
+        return k;
+    }
+
+    // Henter antal flasker af en bestemt type (A, B, C)
+    private int extractAntal(String str, char type) {
+        Pattern p = Pattern.compile("(\\d+)" + type);
+        Matcher m = p.matcher(str);
+        return m.find() ? Integer.parseInt(m.group(1)) : 0;
     }
 }

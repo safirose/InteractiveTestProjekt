@@ -22,6 +22,13 @@ public class MapActivity extends BaseActivity {
     // Deklarerer et kort objekt
     private MapView map;
 
+  /*  Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+    intent.putExtra("brugernavn", brugernavn);
+    intent.putExtra("brugerid", brugerId);
+    startActivity(intent);
+    finish();
+
+   */
     @Override
     // onCreate – se lifecycle for app activities!
     protected void onCreate(Bundle savedInstanceState) {

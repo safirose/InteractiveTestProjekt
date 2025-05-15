@@ -10,22 +10,29 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         if (bottomNav != null) {
             bottomNav.setSelectedItemId(selectedItemId);
-
             bottomNav.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
-
                 if (id == selectedItemId) return true;
-
                 if (id == R.id.nav_home) {
-                    startActivity(new Intent(this, MapActivity.class));
+                    Intent intent = new Intent(this, MapActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish(); // kun hvis ny aktivitet blev startet
+                    return true;
                 } else if (id == R.id.nav_scan) {
                     startActivity(new Intent(this, CameraActivity.class));
+                    finish(); // kun hvis ny aktivitet blev startet
+                    return true;
                 }
-                // Tilføjer SaldoActivity senere når denne laves.
+                else if (id == R.id.nav_saldo) {
+                    startActivity(new Intent(this, SaldoActivity.class));
+                    finish();
+                    return true;
+                }
+                return false;
 
-                finish(); // Luk aktiviteten
-                return true;
             });
+
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.beginningandroid.interactivetest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,10 +10,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
-
     private EditText editTextUsername;
     private Button buttonLogin;
     private MyDatabaseHelper dbHelper;
+    //private int brugerId = dbHelper.getUserId(brugernavn);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +44,11 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Bruger fundet. ID: " + id, Toast.LENGTH_SHORT).show();
                 }
 
-                // Gå videre til MapActivity og send brugernavn med
-                Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+                SharedPreferences prefs = getSharedPreferences("pantapp", MODE_PRIVATE);
+                prefs.edit().putString("brugernavn", brugernavn).apply();
+
+                // Gå videre til SaldoActivity og send brugernavn med
+                Intent intent = new Intent(LoginActivity.this, SaldoActivity.class);
                 intent.putExtra("brugernavn", brugernavn); // Du kan også sende brugerID hvis ønsket
                 startActivity(intent);
                 finish();

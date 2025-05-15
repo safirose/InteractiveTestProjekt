@@ -2,9 +2,8 @@ package org.beginningandroid.interactivetest;
 
 import android.os.Bundle;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class MarkerDetailActivity extends AppCompatActivity {
+public class MarkerDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,7 +14,6 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         // Find TextView og opdater teksten med markørens navn
         TextView textView = findViewById(R.id.textView);
-        textView.setText("Du klikkede på: " + locationName + "\n Åbningstiderne er: 7:00-22");
-
+        textView.setText("Adresse " + locationName + "\nÅbningstiderne er: 7:00-22");
     }
 }

@@ -92,23 +92,31 @@ public class MapActivity extends BaseActivity {
             return true;
         });
     }
+
+    // Metode til at ændre størrelsen på et billede (drawable)
     private Drawable getResizedDrawable(int drawableId, int width, int height) {
+
+        // Henter billedet fra resourser
         Drawable original = ContextCompat.getDrawable(this, drawableId);
 
         if (original == null) return null;
 
+        // Opretter bitmap i samme størrelse som orginalbilledet
         Bitmap originalBitmap = Bitmap.createBitmap(
                 original.getIntrinsicWidth(),
                 original.getIntrinsicHeight(),
                 Bitmap.Config.ARGB_8888
         );
 
+        // Tegner billedet som vi vil bruge som vores markør ind i bitmap
         Canvas canvas = new Canvas(originalBitmap);
         original.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         original.draw(canvas);
 
+        // Skalere billedet til den ønsket størrelse
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, width, height, true);
 
+        // Retunere til drawable igen
         return new BitmapDrawable(getResources(), scaledBitmap);
     }
 

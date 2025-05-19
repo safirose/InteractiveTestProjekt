@@ -12,7 +12,7 @@ import java.util.List;
 // vores DB-helper arver fra superklassen SQLiteOpenHelper
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 
-    // Database navn og version
+    // Navn og version på Databasen
     private static final String DATABASE_NAME = "MinPantAppDatabase.db";
     private static final int DATABASE_VERSION = 3;
 

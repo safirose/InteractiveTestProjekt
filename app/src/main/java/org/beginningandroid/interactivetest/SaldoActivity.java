@@ -18,23 +18,25 @@ public class SaldoActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Indlæs layoutfil for saldo-aktivitet
         setContentView(R.layout.activity_saldo);
 
         // Kalder bundmenu til saldoikonet
         setupBottomNavigation(R.id.nav_saldo);
 
+        // Find referencer til de grafiske elementer
         userNameText = findViewById(R.id.userNameText);
         saldoText = findViewById(R.id.saldoText);
         receiptList = findViewById(R.id.receiptList);
 
         dbHelper = new MyDatabaseHelper(this);
         SharedPreferences prefs = getSharedPreferences("pantapp", MODE_PRIVATE);
-        brugerNavn = prefs.getString("brugernavn", "Ukendt");
+        brugerNavn = prefs.getString("brugernavn", "Ukendt"); // Henter brugernavn
 
-
+        // Overskrift med brugernavn + saldo
         userNameText.setText(brugerNavn + "s Saldo");
 
-        // Henter alle kvitteringer
+        // Henter alle kvitteringer fra database
         List<Kvittering> kvitteringer = dbHelper.hentAlleKvitteringer();
         double total = dbHelper.beregnTotalSaldo();
 

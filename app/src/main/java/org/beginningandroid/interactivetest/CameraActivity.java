@@ -29,7 +29,7 @@ public class CameraActivity extends BaseActivity {
     private PreviewView previewView;
     //Barcode scanner
     private BarcodeScanner scanner;
-    //Boolean til kun 1 scanning
+    //Boolean til kun 1 scanning, så man ikke kan gentage samme scanning
     private boolean scanned = false;
 
     @Override
@@ -40,6 +40,8 @@ public class CameraActivity extends BaseActivity {
         setupBottomNavigation(R.id.nav_scan);
 
         previewView = findViewById(R.id.previewView);
+
+        // initalisere ML Kit scanner
         scanner = BarcodeScanning.getClient();
 
         //tjekker hvorvidt brugeren har givet adgang til kameraet
@@ -84,21 +86,26 @@ public class CameraActivity extends BaseActivity {
         }, getExecutor());
     }
 
+    // Analyze af billede for stregkoder
     private void analyzeImage(@NonNull ImageProxy imageProxy) {
+        // Hvis allerede scannet, lukkes billedet og retuneres
         if (scanned) {
             imageProxy.close();
             return;
         }
 
+        // konventere kameraet billede til InputImage
         @SuppressWarnings("UnsafeOptInUsageError")
         InputImage image = InputImage.fromMediaImage(
                 imageProxy.getImage(),
                 imageProxy.getImageInfo().getRotationDegrees()
         );
 
+        // Start scanning af stregkode
         scanner.process(image)
                 .addOnSuccessListener(barcodes -> {
                     if (!barcodes.isEmpty()) {
+                        // Fik scannet noget, hentes data
                         String raw = barcodes.get(0).getRawValue();
                         scanned = true;
 
@@ -168,6 +175,7 @@ public class CameraActivity extends BaseActivity {
             return k;
         }
 
+        // Tager tid og dato fra tekst
         String timer = dele[0];                // "09"
         String minOgDato = dele[1];            // "40140425"
 

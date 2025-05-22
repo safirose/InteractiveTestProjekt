@@ -1,9 +1,13 @@
 package org.beginningandroid.interactivetest;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,43 +17,70 @@ public class SaldoActivity extends BaseActivity {
     private TextView userNameText, saldoText;
     private ListView receiptList;
     private MyDatabaseHelper dbHelper;
-    private String brugerNavn;
+    private String brugernavn;
+    private EditText editTextUdbetal;
+    private Button buttonUdbetal;
+    private double totalSaldo;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saldo);
 
         // Kalder bundmenu til saldoikonet
         setupBottomNavigation(R.id.nav_saldo);
 
+        // Init views
         userNameText = findViewById(R.id.userNameText);
         saldoText = findViewById(R.id.saldoText);
         receiptList = findViewById(R.id.receiptList);
+        editTextUdbetal = findViewById(R.id.editTextUdbetal);
+        buttonUdbetal = findViewById(R.id.buttonUdbetal);
 
         dbHelper = new MyDatabaseHelper(this);
+
+        // Hent brugernavn fra SharedPreferences
         SharedPreferences prefs = getSharedPreferences("pantapp", MODE_PRIVATE);
-        brugerNavn = prefs.getString("brugernavn", "Ukendt");
+        brugernavn = prefs.getString("brugernavn", "Ukendt");
+        userNameText.setText(brugernavn + "s Saldo");
 
-
-        userNameText.setText(brugerNavn + "s Saldo");
-
-        // Henter alle kvitteringer
+        // Hent kvitteringer og udregn saldo
         List<Kvittering> kvitteringer = dbHelper.hentAlleKvitteringer();
-        double total = dbHelper.beregnTotalSaldo();
+        double samletIndtjent = dbHelper.beregnTotalSaldo();        // SUM fra Kvittering
+        double udbetalt = dbHelper.beregnTotalUdbetaling();         // SUM fra Udbetaling
+        totalSaldo = samletIndtjent - udbetalt;
 
-        // Konverterer kvitteringer til tekst til visning
+        saldoText.setText("Saldo: " + totalSaldo + " kr.");
+
+        // Vis kvitteringer i ListView
         List<String> visning = new ArrayList<>();
         for (Kvittering k : kvitteringer) {
             visning.add(k.toDisplayString());
         }
 
-        // Viser kvitteringer i ListView
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, visning);
         receiptList.setAdapter(adapter);
 
-        // Viser samlet saldo
-        saldoText.setText("Saldo: " + total + " kr.");
+        // Håndter klik på udbetal-knap
+        buttonUdbetal.setOnClickListener(v -> {
+            String input = editTextUdbetal.getText().toString().trim();
+
+            if (input.isEmpty()) {
+                Toast.makeText(this, "Indtast et beløb", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            double ønsketBeløb = Double.parseDouble(input);
+            if (ønsketBeløb > totalSaldo) {
+                Toast.makeText(this, "Beløbet overstiger din saldo!", Toast.LENGTH_SHORT).show();
+            } else {
+                dbHelper.insertUdbetaling(ønsketBeløb);
+                totalSaldo -= ønsketBeløb;
+                saldoText.setText("Saldo: " + totalSaldo + " kr.");
+                Toast.makeText(this, "Udbetalt: " + ønsketBeløb + " kr.", Toast.LENGTH_SHORT).show();
+                editTextUdbetal.setText("");
+            }
+        });
     }
 }

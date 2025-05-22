@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 //Definerer vores MainActivity, der arver fra AppCompatActivity
 public class MainActivity extends AppCompatActivity {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Starter LoginActivity som MainActivity, da dette er vores første aktivitet

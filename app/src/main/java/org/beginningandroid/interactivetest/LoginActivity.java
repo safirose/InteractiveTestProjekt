@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
                 prefs.edit().putString("brugernavn", brugernavn).apply();
 
                 // Gå videre til SaldoActivity og send brugernavn med
-                Intent intent = new Intent(LoginActivity.this, SaldoActivity.class);
+                Intent intent = new Intent(LoginActivity.this, MapActivity.class);
                 intent.putExtra("brugernavn", brugernavn); // Du kan også sende brugerID hvis ønsket
                 startActivity(intent);
                 finish();

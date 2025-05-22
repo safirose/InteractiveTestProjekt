@@ -5,8 +5,8 @@ public class Kvittering {
     public int antalTypeA;
     public int antalTypeB;
     public int antalTypeC;
-    public String tidspunkt; // format: hh:mm
-    public String dato;      // format: yyyy-MM-dd
+    public String tidspunkt;
+    public String dato;
 
     public Kvittering() {
         // Tom konstruktør

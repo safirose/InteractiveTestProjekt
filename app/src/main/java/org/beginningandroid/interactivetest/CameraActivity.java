@@ -33,7 +33,7 @@ public class CameraActivity extends BaseActivity {
     private boolean scanned = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         //Kalder bundmenu til scan iconet

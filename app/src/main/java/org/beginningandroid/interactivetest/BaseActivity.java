@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public abstract class BaseActivity extends AppCompatActivity {
-    protected void setupBottomNavigation(int selectedItemId) {
+    public void setupBottomNavigation(int selectedItemId) {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 
         if (bottomNav != null) {
@@ -32,7 +32,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 return false;
 
             });
-
         }
     }
 }

@@ -28,14 +28,34 @@
             android:src="@drawable/konto_ikon" />
     </LinearLayout>
 
+    <!-- Indtast beløb -->
+    <EditText
+        android:id="@+id/editTextUdbetal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/headerLayout"
+        android:layout_margin="16dp"
+        android:hint="Indtast beløb"
+        android:inputType="numberDecimal" />
+
+    <!-- Udbetal knap -->
+    <Button
+        android:id="@+id/buttonUdbetal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextUdbetal"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="Udbetal beløb" />
+
     <!-- Kvitteringsliste -->
     <ListView
         android:id="@+id/receiptList"
-        android:layout_below="@id/headerLayout"
-        android:layout_above="@id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_below="@id/buttonUdbetal"
+        android:layout_above="@id/saldoText"
         android:padding="16dp"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp" />
@@ -62,5 +82,4 @@
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="labeled"
         android:background="?android:attr/windowBackground" />
-
 </RelativeLayout>

@@ -37,7 +37,7 @@ public class MapActivity extends BaseActivity {
    */
     @Override
     // onCreate – se lifecycle for app activities!
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         // Kalder vores superklasse
         super.onCreate(savedInstanceState);
         // Indlæser layout filen fra res/layout/activity_map.xml
@@ -67,14 +67,14 @@ public class MapActivity extends BaseActivity {
         marker.setPosition(startPoint);
         marker.setTitle("Netto, Blågårdsgade 26");
         //marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        marker.setIcon(getResizedDrawable(R.drawable.netto_logo, 80, 80));
+        marker.setIcon(resizeDrawable(R.drawable.netto_logo, 80, 80));
         map.getOverlays().add(marker);
 
         Marker marker2 = new Marker(map);
         marker2.setPosition(supermarket1);
         marker2.setTitle("Netto, Rantzausgade 21");
         //marker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        marker2.setIcon(getResizedDrawable(R.drawable.netto_logo, 80, 80));
+        marker2.setIcon(resizeDrawable(R.drawable.netto_logo, 80, 80));
         map.getOverlays().add(marker2);
 
         // Gør markører interaktive
@@ -92,7 +92,7 @@ public class MapActivity extends BaseActivity {
             return true;
         });
     }
-    private Drawable getResizedDrawable(int drawableId, int width, int height) {
+    private Drawable resizeDrawable (int drawableId, int width, int height) {
         Drawable original = ContextCompat.getDrawable(this, drawableId);
 
         if (original == null) return null;
@@ -111,7 +111,6 @@ public class MapActivity extends BaseActivity {
 
         return new BitmapDrawable(getResources(), scaledBitmap);
     }
-
 }
 
 

@@ -9,109 +9,119 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-// vores DB-helper arver fra superklassen SQLiteOpenHelper
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     // Database navn og version
-    private static final String DATABASE_NAME = "MinPantAppDatabase.db";
-    private static final int DATABASE_VERSION = 3;
+    public static final String DATABASE_NAME = "MinPantAppDatabase.db";
+    public static final int DATABASE_VERSION = 3;
 
-    // Tabel- og kolonnenavne: Tabellen "Bruger" indholder brugernavn og unikt bruger_id.
+    // Bruger-tabel
     public static final String TABLE_BRUGER = "Bruger";
-    public static final String COLUMN_ID = "bruger_id";
-    public static final String COLUMN_NAME = "brugernavn";
+    public static final String COLUMN_BRUGER_ID = "bruger_id";
+    public static final String COLUMN_BRUGERNAVN = "brugernavn";
 
-    // Constructor som kaldes ved oprettelse af databasen
+    // Kvittering-tabel
+    public static final String TABLE_KVITTERING = "Kvittering";
+    public static final String COLUMN_LOKATION_ID = "lokation_id";
+    public static final String COLUMN_ANTAL_A = "antal_type_a";
+    public static final String COLUMN_ANTAL_B = "antal_type_b";
+    public static final String COLUMN_ANTAL_C = "antal_type_c";
+    public static final String COLUMN_TIDSPUNKT = "tidspunkt";
+    public static final String COLUMN_DATO = "dato";
+
+    // Udbetaling-tabel
+    public static final String TABLE_UDBETALING = "Udbetaling";
+    public static final String COLUMN_BELOEB = "beløb";
+
     public MyDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Kaldes når databasen oprettes første gang
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_BRUGER + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + // PK og Autoincrement
-                COLUMN_NAME + " TEXT UNIQUE)"; // Sørger for unikt brugernavn
-        db.execSQL(CREATE_TABLE);
+        String createBruger = "CREATE TABLE IF NOT EXISTS " + TABLE_BRUGER + " (" +
+                COLUMN_BRUGER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_BRUGERNAVN + " TEXT UNIQUE)";
+        db.execSQL(createBruger);
 
-        // Opretter tabel til kvitteringer
-        String CREATE_KVITTERING_TABLE = "CREATE TABLE IF NOT EXISTS Kvittering (" +
+        String createKvittering = "CREATE TABLE IF NOT EXISTS " + TABLE_KVITTERING + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "lokation_id INTEGER, " +
-                "antal_type_a INTEGER, " +
-                "antal_type_b INTEGER, " +
-                "antal_type_c INTEGER, " +
-                "tidspunkt TEXT, " +
-                "dato TEXT)";
-        db.execSQL(CREATE_KVITTERING_TABLE);
+                COLUMN_LOKATION_ID + " INTEGER, " +
+                COLUMN_ANTAL_A + " INTEGER, " +
+                COLUMN_ANTAL_B + " INTEGER, " +
+                COLUMN_ANTAL_C + " INTEGER, " +
+                COLUMN_TIDSPUNKT + " TEXT, " +
+                COLUMN_DATO + " TEXT)";
+        db.execSQL(createKvittering);
+
+        String createUdbetaling = "CREATE TABLE IF NOT EXISTS " + TABLE_UDBETALING + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_BELOEB + " REAL, " +
+                COLUMN_DATO + " TEXT)";
+        db.execSQL(createUdbetaling);
     }
 
-    // Kaldes ved versionsændring (f.eks. opgradering)
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BRUGER);
-        db.execSQL("DROP TABLE IF EXISTS Kvittering");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_KVITTERING);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_UDBETALING);
         onCreate(db);
     }
 
-    // Indsæt en ny bruger (hvis ikke eksisterende)
     public long insertUser(String brugernavn) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME, brugernavn);
-        return db.insert(TABLE_BRUGER, null, values); // Returnerer ID eller -1 hvis fejl
+        values.put(COLUMN_BRUGERNAVN, brugernavn);
+        return db.insert(TABLE_BRUGER, null, values);
     }
 
-    // Hent brugerens ID ud fra brugernavn
     public int getUserId(String brugernavn) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_BRUGER,
-                new String[]{COLUMN_ID},
-                COLUMN_NAME + "=?",
+                new String[]{COLUMN_BRUGER_ID},
+                COLUMN_BRUGERNAVN + "=?",
                 new String[]{brugernavn},
                 null, null, null);
         int id = -1;
         if (cursor.moveToFirst()) {
-            id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
+            id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_BRUGER_ID));
         }
         cursor.close();
         return id;
     }
 
-    // Tjek om bruger eksisterer
     public boolean userExists(String brugernavn) {
         return getUserId(brugernavn) != -1;
     }
 
-    // Indsæt ny kvittering i databasen
     public void insertKvittering(Kvittering k) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("lokation_id", k.lokationId);
-        values.put("antal_type_a", k.antalTypeA);
-        values.put("antal_type_b", k.antalTypeB);
-        values.put("antal_type_c", k.antalTypeC);
-        values.put("tidspunkt", k.tidspunkt);
-        values.put("dato", k.dato);
-        db.insert("Kvittering", null, values);
+        values.put(COLUMN_LOKATION_ID, k.lokationId);
+        values.put(COLUMN_ANTAL_A, k.antalTypeA);
+        values.put(COLUMN_ANTAL_B, k.antalTypeB);
+        values.put(COLUMN_ANTAL_C, k.antalTypeC);
+        values.put(COLUMN_TIDSPUNKT, k.tidspunkt);
+        values.put(COLUMN_DATO, k.dato);
+        db.insert(TABLE_KVITTERING, null, values);
         db.close();
     }
 
-    // Hent alle kvitteringer fra databasen
     public List<Kvittering> hentAlleKvitteringer() {
         List<Kvittering> kvitteringer = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM Kvittering", null);
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_KVITTERING, null);
 
         if (cursor.moveToFirst()) {
             do {
                 Kvittering k = new Kvittering();
-                k.lokationId = cursor.getInt(cursor.getColumnIndexOrThrow("lokation_id"));
-                k.antalTypeA = cursor.getInt(cursor.getColumnIndexOrThrow("antal_type_a"));
-                k.antalTypeB = cursor.getInt(cursor.getColumnIndexOrThrow("antal_type_b"));
-                k.antalTypeC = cursor.getInt(cursor.getColumnIndexOrThrow("antal_type_c"));
-                k.tidspunkt = cursor.getString(cursor.getColumnIndexOrThrow("tidspunkt"));
-                k.dato = cursor.getString(cursor.getColumnIndexOrThrow("dato"));
+                k.lokationId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_LOKATION_ID));
+                k.antalTypeA = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ANTAL_A));
+                k.antalTypeB = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ANTAL_B));
+                k.antalTypeC = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ANTAL_C));
+                k.tidspunkt = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TIDSPUNKT));
+                k.dato = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATO));
                 kvitteringer.add(k);
             } while (cursor.moveToNext());
         }
@@ -121,13 +131,32 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return kvitteringer;
     }
 
-    // Udregner samlet beløb (saldo)
     public double beregnTotalSaldo() {
         double total = 0.0;
-        List<Kvittering> kvitteringer = hentAlleKvitteringer();
-        for (Kvittering k : kvitteringer) {
+        for (Kvittering k : hentAlleKvitteringer()) {
             total += k.getSamletBeloeb();
         }
+        return total;
+    }
+
+    public void insertUdbetaling(double beløb) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_BELOEB, beløb);
+        values.put(COLUMN_DATO, new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(new java.util.Date()));
+        db.insert(TABLE_UDBETALING, null, values);
+        db.close();
+    }
+
+    public double beregnTotalUdbetaling() {
+        double total = 0.0;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT SUM(" + COLUMN_BELOEB + ") FROM " + TABLE_UDBETALING, null);
+        if (cursor.moveToFirst()) {
+            total = cursor.getDouble(0);
+        }
+        cursor.close();
+        db.close();
         return total;
     }
 }

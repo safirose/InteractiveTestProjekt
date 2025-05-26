@@ -12,14 +12,14 @@ public class KvitteringTest {
     public void testParsePantBeløbPass(){
         Kvittering kvittering = new Kvittering(1,2,4,1,"15:00","24-05-2025");
         double expected = 11;
-        double actual = 11;
-        assertEquals(expected,actual,0.01);
+        double actual = kvittering.getSamletBeloeb();
+        assertEquals(expected,actual,0);
     }
     @Test
 public void testParsePantBeløbFail(){
         Kvittering kvittering = new Kvittering(1,2,4,1,"15.00","24-05-2025");
-     double expected = 11;
-     double actual = 10.98;
+     double expected = 10.98;
+     double actual = kvittering.getSamletBeloeb();
         assertEquals(expected,actual,0.01);
 }
 }

@@ -46,14 +46,14 @@ public class CameraActivity extends BaseActivity {
 
         //tjekker hvorvidt brugeren har givet adgang til kameraet
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
+                == PackageManager.PERMISSION_GRANTED) {
+            startCamera();
+        } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.CAMERA},
                     100);
-            return; // Vent med at starte kamera
+            // return; // Vent med at starte kamera
         }
-
-        startCamera();
     }
 
     private void startCamera() {

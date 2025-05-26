@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SaldoActivity extends BaseActivity {
-
     private TextView userNameText, saldoText;
     private ListView receiptList;
     private MyDatabaseHelper dbHelper;
@@ -39,9 +38,9 @@ public class SaldoActivity extends BaseActivity {
 
         dbHelper = new MyDatabaseHelper(this);
 
-        // Hent brugernavn fra SharedPreferences
-        SharedPreferences prefs = getSharedPreferences("pantapp", MODE_PRIVATE);
-        brugernavn = prefs.getString("brugernavn", "Ukendt");
+        // Hent brugernavn fra database
+        int brugerId = getIntent().getIntExtra("brugerid", -1);
+        String brugernavn = dbHelper.hentBrugernavnFraId(brugerId);
         userNameText.setText(brugernavn + "s Saldo");
 
         // Hent kvitteringer og udregn saldo
@@ -75,7 +74,7 @@ public class SaldoActivity extends BaseActivity {
             if (ønsketBeløb > totalSaldo) {
                 Toast.makeText(this, "Beløbet overstiger din saldo!", Toast.LENGTH_SHORT).show();
             } else {
-                dbHelper.insertUdbetaling(ønsketBeløb);
+                dbHelper.insertUdbetaling(ønsketBeløb, brugerId);
                 totalSaldo -= ønsketBeløb;
                 saldoText.setText("Saldo: " + totalSaldo + " kr.");
                 Toast.makeText(this, "Udbetalt: " + ønsketBeløb + " kr.", Toast.LENGTH_SHORT).show();

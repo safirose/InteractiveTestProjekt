@@ -18,7 +18,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login); // Husk: layoutfil skal hedde activity_login.xml
+        setContentView(R.layout.activity_login);
 
         // Initialiser komponenter
         editTextUsername = findViewById(R.id.editTextUsername);
@@ -48,10 +48,11 @@ public class LoginActivity extends AppCompatActivity {
                 prefs.edit().putString("brugernavn", brugernavn).apply();
 
                 // Gå videre til SaldoActivity og send brugernavn med
+                int brugerId = dbHelper.getUserId(brugernavn);
                 Intent intent = new Intent(LoginActivity.this, MapActivity.class);
-                intent.putExtra("brugernavn", brugernavn); // Du kan også sende brugerID hvis ønsket
+                intent.putExtra("brugerid", brugerId);
                 startActivity(intent);
-                finish();
+
             }
         });
     }

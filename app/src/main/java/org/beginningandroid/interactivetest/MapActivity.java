@@ -28,13 +28,6 @@ public class MapActivity extends BaseActivity {
     // Deklarerer et kort objekt
     private MapView map;
 
-  /*  Intent intent = new Intent(LoginActivity.this, MapActivity.class);
-    intent.putExtra("brugernavn", brugernavn);
-    intent.putExtra("brugerid", brugerId);
-    startActivity(intent);
-    finish();
-
-   */
     @Override
     // onCreate – se lifecycle for app activities!
     public void onCreate(Bundle savedInstanceState) {
@@ -91,7 +84,9 @@ public class MapActivity extends BaseActivity {
             startActivity(intent);
             return true;
         });
+
     }
+
     private Drawable resizeDrawable (int drawableId, int width, int height) {
         Drawable original = ContextCompat.getDrawable(this, drawableId);
 
@@ -111,6 +106,7 @@ public class MapActivity extends BaseActivity {
 
         return new BitmapDrawable(getResources(), scaledBitmap);
     }
+
 }
 
 

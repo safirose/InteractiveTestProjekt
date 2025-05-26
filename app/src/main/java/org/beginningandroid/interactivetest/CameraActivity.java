@@ -113,25 +113,30 @@ public class CameraActivity extends BaseActivity {
                             // 1. Parser stregkoden
                             Kvittering kvit = parseKvitteringskode(raw);
 
+
                             // 2. Gemmer i SQLite-databasen
                             MyDatabaseHelper dbHelper = new MyDatabaseHelper(this);
-                            dbHelper.insertKvittering(kvit);
+                            int brugerId = getIntent().getIntExtra("brugerid", -1);
+                            dbHelper.insertKvittering(kvit, brugerId);
+
 
                             // 3. Giver feedback til brugeren
                             Toast.makeText(this,
                                     "Kvittering gemt: " + kvit.getSamletBeloeb() + " kr",
                                     Toast.LENGTH_LONG).show();
 
+                            //Måske slette nedstående?
                             Log.d("SCANNING", "Gemte kvittering:\n" + kvit.toDisplayString());
                         });
-                        // Her vil vi senere parse og gemme i database
                     }
                     imageProxy.close();
-                })
-                .addOnFailureListener(e -> {
-                    e.printStackTrace();
-                    imageProxy.close();
                 });
+        //NOTE: HAR PRØVET AT FJERNE DENNE, overall prøver jeg at simplificere programmet og fjerne de instanser,
+        //Der virker overkompliceret
+             //   .addOnFailureListener(e -> {
+                  //  e.printStackTrace();
+                 //   imageProxy.close();
+                //});
 
     }
 
@@ -185,7 +190,7 @@ public class CameraActivity extends BaseActivity {
         String år = "20" + minOgDato.substring(6, 8);// "2025"
 
         k.tidspunkt = timer + ":" + minutter;
-        k.dato = år + "-" + måned + "-" + dag;
+        k.dato = dag + "-" + måned + "-" + år;
 
         return k;
     }

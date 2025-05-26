@@ -24,7 +24,7 @@ public class SaldoActivityUITest {
         Context context = ApplicationProvider.getApplicationContext();
         MyDatabaseHelper db = new MyDatabaseHelper(context);
 
-        db.insertKvittering(new Kvittering(1,4,3,5,"12:24","25-05-2025"));
+        db.insertKvittering(new Kvittering(1,4,3,5,"12:24","25-05-2025"),1);
         totalSaldo = db.beregnTotalSaldo();
     }
 @Test

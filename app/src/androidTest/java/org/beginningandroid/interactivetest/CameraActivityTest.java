@@ -20,10 +20,3 @@ public class CameraActivityTest {
         onView(withId(R.id.previewView)).check(matches(isDisplayed()));
     }
 }
-   /* @Test
-    public void testCameraLaunchPermissionDismissed(){
-        ActivityScenario.launch(CameraActivity.class);
-        onView((withId(R.id.previewView)).check(matches(isDisplayed()));
-    }
-
-}*/

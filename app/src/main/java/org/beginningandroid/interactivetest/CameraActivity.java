@@ -131,12 +131,6 @@ public class CameraActivity extends BaseActivity {
                     }
                     imageProxy.close();
                 });
-        //NOTE: HAR PRØVET AT FJERNE DENNE, overall prøver jeg at simplificere programmet og fjerne de instanser,
-        //Der virker overkompliceret
-             //   .addOnFailureListener(e -> {
-                  //  e.printStackTrace();
-                 //   imageProxy.close();
-                //});
 
     }
 

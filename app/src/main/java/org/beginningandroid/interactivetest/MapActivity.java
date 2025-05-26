@@ -87,6 +87,7 @@ public class MapActivity extends BaseActivity {
 
     }
 
+    // Styre størrelsen på vores markør (Netto logo'er)
     private Drawable resizeDrawable (int drawableId, int width, int height) {
         Drawable original = ContextCompat.getDrawable(this, drawableId);
 
